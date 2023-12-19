@@ -43,9 +43,47 @@ namespace ConwayGameOfLife
                 tempstatus = new short[x, y];
             }
 
+            /// <summary>
+            /// rewrites status according to game rules
+            /// </summary>
             public void newGeneration()
             {
-                  
+                short[,] temp;
+                for (int i = 0; i < status.GetLength(0); i++)
+                {
+                    for(int j = 0; j < status.GetLength(1); j++)
+                    {
+                        if (status[i, j] == 0)
+                        {
+                            if(neighbours(1, i, j) == 3)
+                            {
+                                tempstatus[i, j] = 1;
+                            }
+                            else if (neighbours(-1, i,j) == 3)
+                            {
+                                tempstatus[i, j] = -1;
+                            }
+                            else
+                            {
+                                tempstatus[i, j] = 0;
+                            }
+                        }
+                        else
+                        {
+                            if (neighbours(status[i, j], i, j) < 3 || neighbours(status[i, j], i, j) > 4)
+                            {
+                                tempstatus[i, j] = 0;
+                            }
+                            else
+                            {
+                                tempstatus[i, j] = status[i,j];
+                            }
+                        }
+                    }
+                }
+                temp = status;
+                status = tempstatus;
+                tempstatus = temp;
             }
 
             /// <summary>
