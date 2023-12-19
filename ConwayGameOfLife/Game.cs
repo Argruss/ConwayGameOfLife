@@ -16,7 +16,7 @@ namespace ConwayGameOfLife
         Arena arena;
         public Game(int x, int y)
         { 
-            arena = new Arena(x,y);
+            arena = new Arena(x/10,y/10);
             #region Making Form look right
             InitializeComponent();
             Size = new Size(x, y + panel1.Height);
@@ -45,13 +45,31 @@ namespace ConwayGameOfLife
 
             public void newGeneration()
             {
-                               
+                  
             }
 
-            private int neighbours(int color)
+            /// <summary>
+            /// returns number of neighbour of coresponding color
+            /// </summary>
+            /// <param name="color">color of neighbours</param>
+            /// <param name="X">X coordinates</param>
+            /// <param name="Y">Y coordinates</param>
+            /// <returns></returns>
+            private int neighbours(int color, int X, int Y)
             {
-                
-                return 0;
+                int result = 0;
+                for (int i = X-1; i <= X+1; i++)
+                {
+                    for (int j = Y-1; j <= Y+1; j++)
+                    {
+                        if (status[(i + status.GetLength(0)) % status.GetLength(0),(j + status.GetLength(1)) % status.GetLength(1)] == color)
+                        {
+                            result++;
+                        }
+                        
+                    }
+                }
+                return result;
             }
         }
 
