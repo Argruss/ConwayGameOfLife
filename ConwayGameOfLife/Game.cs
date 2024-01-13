@@ -35,12 +35,10 @@ namespace ConwayGameOfLife
         class Arena
         {
             public short[,] status { get; private set; }
-            private short[,] tempstatus;
 
             public Arena(int x, int y)
             {
                 status = new short[x, y];
-                tempstatus = new short[x, y];
             }
 
             /// <summary>
@@ -48,46 +46,42 @@ namespace ConwayGameOfLife
             /// </summary>
             public void newGeneration()
             {
-                short[,] temp;
+                short[,] temp = new short[status.GetLength(0),status.GetLength(1)];
                 for (int i = 0; i < status.GetLength(0); i++)
                 {
                     for(int j = 0; j < status.GetLength(1); j++)
                     {
-                        if (status[i, j] == 0)
+                        if (status[i, j] == 0) //white space
                         {
-                            if(neighbours(1, i, j) == 3)
+                            int red = neighbours(1, i, j);
+                            int blue = neighbours(-1, i, j);
+                            if (red != blue)
                             {
-                                tempstatus[i, j] = 1;
-                            }
-                            else if (neighbours(-1, i,j) == 3)
-                            {
-                                tempstatus[i, j] = -1;
-                            }
-                            else
-                            {
-                                tempstatus[i, j] = 0;
+                                if (red == 3)
+                                    temp[i, j] = 1;
+                                if (blue == 3)
+                                    temp[i, j] = -1;
+
                             }
                         }
-                        else
+                        else //colored space
                         {
                             if (neighbours(status[i, j], i, j) < 3 || neighbours(status[i, j], i, j) > 4)
                             {
-                                tempstatus[i, j] = 0;
+                                temp[i, j] = 0;
                             }
                             else
                             {
-                                tempstatus[i, j] = status[i,j];
+                                temp[i, j] = status[i,j];
                             }
                         }
                     }
                 }
-                temp = status;
-                status = tempstatus;
-                tempstatus = temp;
+                status = temp;
             }
 
             /// <summary>
-            /// returns number of neighbour of coresponding color
+            /// returns number of neighbours of coresponding color
             /// </summary>
             /// <param name="color">color of neighbours</param>
             /// <param name="X">X coordinates</param>
