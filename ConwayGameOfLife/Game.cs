@@ -40,7 +40,7 @@ namespace ConwayGameOfLife
             /// </summary>
             public void newGeneration()
             {
-                Cells[,] temp = new Cells[status.GetLength(0),status.GetLength(1)];
+                Cells[,] temp = (Cells[,])status.Clone();
                 for (int i = 0; i < status.GetLength(0); i++)
                 {
                     for(int j = 0; j < status.GetLength(1); j++)
@@ -61,7 +61,12 @@ namespace ConwayGameOfLife
                         {
                             if (neighbours(status[i, j], i, j) < 3 || neighbours(status[i, j], i, j) > 4)
                             {
-                                temp[i, j] = 0;
+                                if (status[i,j] == Cells.red) {
+                                    temp[i,j] = Cells.red_dead;
+                                }
+                                else {
+                                    temp[i, j] = Cells.blue_dead;
+                                }
                             }
                             else
                             {
@@ -104,8 +109,10 @@ namespace ConwayGameOfLife
 
         private Pen pen = new Pen(Color.Black, 1);
         private SolidBrush blueBrush = new SolidBrush(Color.Blue);
+        private SolidBrush deadbluBrush = new SolidBrush(Color.Aqua);
         private SolidBrush whiteBrush = new SolidBrush(Color.White);
         private SolidBrush redBrush = new SolidBrush(Color.Red);
+        private SolidBrush deadredBrush = new SolidBrush(Color.IndianRed);
         private void Game_Arena_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -136,6 +143,12 @@ namespace ConwayGameOfLife
                             break;
                         case Cells.red:
                             g.FillRectangle(redBrush, i*10 + 1, j * 10 + 1, 9, 9);
+                            break;
+                        case Cells.red_dead:
+                            g.FillRectangle(deadredBrush, i * 10 + 1, j * 10 + 1, 9, 9);
+                            break;
+                        case Cells.blue_dead:
+                            g.FillRectangle(deadbluBrush, i * 10 + 1, j * 10 + 1, 9, 9);
                             break;
                     }
                 }
