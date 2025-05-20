@@ -28,13 +28,11 @@ namespace ConwayGameOfLife
         enum Cells {white = 0, red, blue, red_dead, blue_dead}
         class Arena
         {
-            public short[,] status { get; private set; }
-            private short[,] temp;
+            public Cells[,] status { get; private set; }
 
             public Arena(int x, int y)
             {
-                status = new short[x, y];
-                temp = new short[x, y];
+                status = new Cells[x, y];
             }
 
             /// <summary>
@@ -42,22 +40,21 @@ namespace ConwayGameOfLife
             /// </summary>
             public void newGeneration()
             {
-                temp = new short[status.GetLength(0),status.GetLength(1)];
+                Cells[,] temp = new Cells[status.GetLength(0),status.GetLength(1)];
                 for (int i = 0; i < status.GetLength(0); i++)
                 {
                     for(int j = 0; j < status.GetLength(1); j++)
                     {
-                        if (status[i, j] == 0) //white space
+                        if (IsWhite(i,j))
                         {
-                            int red = neighbours(1, i, j);
-                            int blue = neighbours(-1, i, j);
+                            int red = neighbours(Cells.red, i, j);
+                            int blue = neighbours(Cells.blue, i, j);
                             if (red != blue)
                             {
                                 if (red == 3)
-                                    temp[i, j] = 1;
-                                if (blue == 3)
-                                    temp[i, j] = -1;
-
+                                    temp[i, j] = Cells.red;
+                                else if (blue == 3)
+                                    temp[i, j] = Cells.blue;
                             }
                         }
                         else //colored space
@@ -76,6 +73,10 @@ namespace ConwayGameOfLife
                 status = temp;
             }
 
+            private bool IsWhite(int x, int y) {
+                return status[x,y] is Cells.white or Cells.red_dead or Cells.blue_dead;
+            }
+
             /// <summary>
             /// returns number of neighbours of coresponding color
             /// </summary>
@@ -83,7 +84,7 @@ namespace ConwayGameOfLife
             /// <param name="X">X coordinates</param>
             /// <param name="Y">Y coordinates</param>
             /// <returns></returns>
-            private int neighbours(int color, int X, int Y)
+            private int neighbours(Cells color, int X, int Y)
             {
                 int result = 0;
                 for (int i = X-1; i <= X+1; i++)
@@ -127,13 +128,13 @@ namespace ConwayGameOfLife
                 {
                     switch (arena.status[i, j])
                     {
-                        case -1:
+                        case Cells.blue:
                             g.FillRectangle(blueBrush, i * 10 + 1, j * 10 + 1, 9, 9);
                             break;
-                        case 0:
+                        case Cells.white:
                             g.FillRectangle(whiteBrush, i*10 + 1, j * 10 + 1, 9, 9);
                             break;
-                        case 1:
+                        case Cells.red:
                             g.FillRectangle(redBrush, i*10 + 1, j * 10 + 1, 9, 9);
                             break;
                     }
@@ -175,14 +176,13 @@ namespace ConwayGameOfLife
         private void Game_Arena_MouseClick(object sender, MouseEventArgs e)
         {
             (int X, int Y) = (e.Location.X/10,e.Location.Y/10);
-            const int max = 1;
-            if (arena.status[X, Y] < max)
+            if (e.Button == MouseButtons.Left)
             {
-                arena.status[X, Y]++;
+                arena.status[X, Y] = Cells.red;
             }
             else
             {
-                arena.status[X, Y] = -max;
+                arena.status[X, Y] = Cells.blue;
             }
             Game_Arena.Refresh();
         }
