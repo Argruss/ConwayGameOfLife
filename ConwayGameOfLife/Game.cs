@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ConwayGameOfLife
@@ -32,13 +25,16 @@ namespace ConwayGameOfLife
         /// <summary>
         /// Represents game grid and works with that
         /// </summary>
+        enum Cells {white = 0, red, blue, red_dead, blue_dead}
         class Arena
         {
             public short[,] status { get; private set; }
+            private short[,] temp;
 
             public Arena(int x, int y)
             {
                 status = new short[x, y];
+                temp = new short[x, y];
             }
 
             /// <summary>
@@ -46,7 +42,7 @@ namespace ConwayGameOfLife
             /// </summary>
             public void newGeneration()
             {
-                short[,] temp = new short[status.GetLength(0),status.GetLength(1)];
+                temp = new short[status.GetLength(0),status.GetLength(1)];
                 for (int i = 0; i < status.GetLength(0); i++)
                 {
                     for(int j = 0; j < status.GetLength(1); j++)
@@ -105,20 +101,23 @@ namespace ConwayGameOfLife
             }
         }
 
+        private Pen pen = new Pen(Color.Black, 1);
+        private SolidBrush blueBrush = new SolidBrush(Color.Blue);
+        private SolidBrush whiteBrush = new SolidBrush(Color.White);
+        private SolidBrush redBrush = new SolidBrush(Color.Red);
         private void Game_Arena_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             //Create grid
             {
-                Pen pen = new Pen(Color.Black, 1);
-                for (int i = 0; i <= Game_Arena.Width; i += 10)
+                for (int i = 0; i <= Game_Arena.Width; i += 10) 
                 {
                     g.DrawLine(pen, i, 0, i, Game_Arena.Height);
                 }
-                for (int i = 0; i <= Game_Arena.Height; i += 10)
+                for (int i = 0; i <= Game_Arena.Height; i += 10) 
                 {
                     g.DrawLine(pen, 0, i, Game_Arena.Width, i);
-                }
+                } 
             }
 
             //fill cells with right colors
@@ -129,13 +128,13 @@ namespace ConwayGameOfLife
                     switch (arena.status[i, j])
                     {
                         case -1:
-                            g.FillRectangle(new SolidBrush(Color.Blue), i * 10 + 1, j * 10 + 1, 9, 9);
+                            g.FillRectangle(blueBrush, i * 10 + 1, j * 10 + 1, 9, 9);
                             break;
                         case 0:
-                            g.FillRectangle(new SolidBrush(Color.White), i*10 + 1, j * 10 + 1, 9, 9);
+                            g.FillRectangle(whiteBrush, i*10 + 1, j * 10 + 1, 9, 9);
                             break;
                         case 1:
-                            g.FillRectangle(new SolidBrush(Color.Red), i*10 + 1, j * 10 + 1, 9, 9);
+                            g.FillRectangle(redBrush, i*10 + 1, j * 10 + 1, 9, 9);
                             break;
                     }
                 }
@@ -175,15 +174,15 @@ namespace ConwayGameOfLife
         #region Setting up game arena
         private void Game_Arena_MouseClick(object sender, MouseEventArgs e)
         {
-            Tuple<int,int> loc = new Tuple<int, int>(e.Location.X/10,e.Location.Y/10);
+            (int X, int Y) = (e.Location.X/10,e.Location.Y/10);
             const int max = 1;
-            if (arena.status[loc.Item1, loc.Item2] < max)
+            if (arena.status[X, Y] < max)
             {
-                arena.status[loc.Item1, loc.Item2]++;
+                arena.status[X, Y]++;
             }
             else
             {
-                arena.status[loc.Item1, loc.Item2] = -max;
+                arena.status[X, Y] = -max;
             }
             Game_Arena.Refresh();
         }
