@@ -14,7 +14,7 @@ namespace ConwayGameOfLife
 
         private void Launch_Click(object sender, EventArgs e)
         {
-            Form form = new Game(10*(int)numericUpDown1.Value,10*(int)numericUpDown2.Value);
+            Form form = new Game(10*(int)numericUpDown1.Value,10*(int)numericUpDown2.Value, numericUpDown3.Value>0? (int)numericUpDown3.Value : null);
             form.Show();
             Hide();
         }

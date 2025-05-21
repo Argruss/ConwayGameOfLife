@@ -30,11 +30,13 @@
             components = new System.ComponentModel.Container();
             Game_Arena = new System.Windows.Forms.PictureBox();
             panel1 = new System.Windows.Forms.Panel();
+            trackBar1 = new System.Windows.Forms.TrackBar();
             Play_Button = new System.Windows.Forms.Button();
             Close_Button = new System.Windows.Forms.Button();
             timer1 = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)Game_Arena).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar1).BeginInit();
             SuspendLayout();
             // 
             // Game_Arena
@@ -55,6 +57,7 @@
             // panel1
             // 
             panel1.BackColor = System.Drawing.SystemColors.GrayText;
+            panel1.Controls.Add(trackBar1);
             panel1.Controls.Add(Play_Button);
             panel1.Controls.Add(Close_Button);
             panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -66,6 +69,17 @@
             panel1.MouseDown += panel1_MouseDown;
             panel1.MouseMove += panel1_MouseMove;
             panel1.MouseUp += panel1_MouseUp;
+            // 
+            // trackBar1
+            // 
+            trackBar1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            trackBar1.Location = new System.Drawing.Point(53, 12);
+            trackBar1.Minimum = 1;
+            trackBar1.Name = "trackBar1";
+            trackBar1.Size = new System.Drawing.Size(77, 56);
+            trackBar1.TabIndex = 4;
+            trackBar1.Value = 1;
+            trackBar1.ValueChanged += trackBar1_ValueChanged;
             // 
             // Play_Button
             // 
@@ -91,7 +105,7 @@
             // 
             // timer1
             // 
-            timer1.Interval = 1;
+            timer1.Interval = 200;
             timer1.Tick += timer1_Tick;
             // 
             // Game
@@ -108,6 +122,8 @@
             Text = "Game";
             ((System.ComponentModel.ISupportInitialize)Game_Arena).EndInit();
             panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar1).EndInit();
             ResumeLayout(false);
 
         }
@@ -119,5 +135,6 @@
         private System.Windows.Forms.Button Close_Button;
         private System.Windows.Forms.Button Play_Button;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.TrackBar trackBar1;
     }
 }

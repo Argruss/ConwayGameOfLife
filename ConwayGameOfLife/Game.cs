@@ -6,8 +6,10 @@ namespace ConwayGameOfLife
 {
     public partial class Game : Form {
         Arena arena;
-        public Game(int x, int y) {
+        int? turns;
+        public Game(int x, int y, int? turns = null) {
             arena = new Arena(x / 10, y / 10);
+            this.turns = turns;
             #region Making Form look right
             InitializeComponent();
             Size = new Size(x, y + panel1.Height);
@@ -160,21 +162,6 @@ namespace ConwayGameOfLife
         #endregion
 
         #region Setting up game arena
-        private void Game_Arena_MouseClick(object sender, MouseEventArgs e) {
-            //(int X, int Y) = (e.Location.X / 10, e.Location.Y / 10);
-            //if (e.Button == MouseButtons.Left) {
-            //    if (arena.status[X, Y] == Cells.white)
-            //        arena.status[X, Y] = Cells.red;
-            //    else arena.status[X, Y] = Cells.white;
-            //}
-            //else {
-            //    if (arena.status[X, Y] == Cells.white)
-            //        arena.status[X, Y] = Cells.blue;
-            //    else arena.status[X, Y] = Cells.white;
-            //}
-            //Game_Arena.Refresh();
-        }
-
         private bool painting = false;
         private Cells from = Cells.white, to = Cells.white;
         private void Game_Arena_MouseDown(object sender, MouseEventArgs e) {
@@ -184,7 +171,7 @@ namespace ConwayGameOfLife
                 if (arena.status[X, Y] == Cells.red) {
                     from = Cells.red; to = Cells.white;
                 }
-                else { 
+                else {
                     from = Cells.white; to = Cells.red;
                 }
             }
@@ -229,11 +216,52 @@ namespace ConwayGameOfLife
         }
 
         private void timer1_Tick(object sender, EventArgs e) {
-            arena.newGeneration();
-            Game_Arena.Refresh();
+            if (turns == null || turns-- > 0) {
+                arena.newGeneration();
+            }
+            else {
+                play_button_Click(sender, e);
+                if (Majority() == Cells.red) {
+                    WinText("Red Won");
+                }
+                else {
+                    WinText("Blue Won");
+                }
+
+            }
+                Game_Arena.Refresh();
+        }
+
+        private Cells Majority() {
+            int blue = 0;
+            int red = 0;
+            for (int i = 0; i < arena.status.GetLength(0); i++) {
+                for (int j = 0; j < arena.status.GetLength(1); j++) {
+                    if (arena.status[i, j] is Cells.blue or Cells.blue_dead) blue++;
+                    if (arena.status[i, j] is Cells.red or Cells.red_dead) red++;
+                }
+            }
+            if (red == blue) return Cells.white;
+            if (red > blue) return Cells.red;
+            else return Cells.blue;
+        }
+
+        private void WinText(string text) {
+            Label idk = new Label();
+            idk.Parent = Game_Arena;
+            idk.ForeColor = Color.DarkBlue;
+            idk.BackColor = Color.Black;
+            idk.Text = text;
+            idk.Font = new Font("Comic Sans", 20);
+            idk.Location = new Point(50, 50);
+            idk.Size = new Size(100, 100);
+            idk.Show();
         }
         #endregion
 
 
+        private void trackBar1_ValueChanged(object sender, EventArgs e) {
+            timer1.Interval = 200 / trackBar1.Value;
+        }
     }
 }
