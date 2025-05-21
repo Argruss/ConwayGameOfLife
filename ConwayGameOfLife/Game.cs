@@ -28,6 +28,8 @@ namespace ConwayGameOfLife
         enum Cells { white = 0, red, blue, red_dead, blue_dead }
         class Arena {
             public Cells[,] status { get; private set; }
+            public int X => status.GetLength(0);
+            public int Y => status.GetLength(1);
 
             public Arena(int x, int y) {
                 status = new Cells[x, y];
@@ -194,6 +196,8 @@ namespace ConwayGameOfLife
         private void Game_Arena_MouseMove(object sender, MouseEventArgs e) {
             if (painting) {
                 (int X, int Y) = (e.Location.X / 10, e.Location.Y / 10);
+                if (X >= arena.X || X < 0) return;
+                if (Y >= arena.Y || Y < 0) return;
                 if (arena.status[X, Y] == from) {
                     arena.status[X, Y] = to;
                 }
@@ -235,8 +239,8 @@ namespace ConwayGameOfLife
         private Cells Majority() {
             int blue = 0;
             int red = 0;
-            for (int i = 0; i < arena.status.GetLength(0); i++) {
-                for (int j = 0; j < arena.status.GetLength(1); j++) {
+            for (int i = 0; i < arena.X; i++) {
+                for (int j = 0; j < arena.Y; j++) {
                     if (arena.status[i, j] is Cells.blue or Cells.blue_dead) blue++;
                     if (arena.status[i, j] is Cells.red or Cells.red_dead) red++;
                 }
